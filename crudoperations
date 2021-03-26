@@ -1,0 +1,41 @@
+package jdbcProject;
+
+import java.sql.*;
+import java.util.*;
+public class CIUDPrograms {
+	public static void main(String args[])throws ClassNotFoundException,SQLException {
+		try {
+			System.out.println("Driver loading.....");
+		Class.forName("com.ibm.db2.jcc.DB2Driver");
+		System.out.println("connecting to db2....");
+		Connection con=DriverManager.getConnection("jdbc:db2://172.17.0.142:50001/itgdb","ITGUSR11","miracle11");
+		System.out.println("connected to db2");
+		Statement st=con.createStatement();
+		//System.out.println("statement created");
+		
+		//String query="create table studentDetails(studId int, studName varchar(50))";
+		//int c=st.executeUpdate(query);
+		//System.out.println("Table Created "+c);
+		
+		 //int i=st.executeUpdate("insert into studentDetails values(1,'neelima')");
+		 //int i1=st.executeUpdate("insert into studentDetails values(2,'prathima')");
+		 
+		  //System.out.println(i+" values inserted.");
+		//int u=st.executeUpdate("update studentDetails set studName='varun' where studId=1");
+		 // System.out.println(u+" value updated.");
+		  ResultSet rs= st.executeQuery("select * from studentDetails");
+		  while(rs.next()) {
+			  System.out.println("Retrived values: "+rs.getInt(1)+" "+rs.getString(2));
+			  
+		  }
+		  //int i=st.executeUpdate("delete  from studentDetails where  studName='vhinu'");
+		 
+		con.close();
+		}catch(Exception e) {
+			System.out.println(e);
+			
+		}
+		
+	}
+
+}
