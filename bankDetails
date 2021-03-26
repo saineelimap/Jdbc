@@ -1,0 +1,200 @@
+package jdbcProject;
+
+import java.util.*;
+import java.sql.*;
+
+public class bankdetails extends Exception {
+	bankdetails(String str) {// 2
+		super(str); // 3
+	}
+	// static int balance=0;
+
+	public static void main(String args[]) throws SQLException {
+		int bal = 0, Ac = 0;
+		try {
+			System.out.println("Driver loading.....");
+			Class.forName("com.ibm.db2.jcc.DB2Driver");
+			System.out.println("connecting to db2....");
+			Connection con = DriverManager.getConnection("jdbc:db2://172.17.0.142:50001/itgdb", "ITGUSR11",
+					"miracle11");
+			System.out.println("connected to db2");
+
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery("select * from CusDls");
+			while (rs.next()) {
+				System.out.println(rs.getInt(1) + " " + rs.getString(2) + " " + rs.getString(3) + " " + rs.getString(4)
+						+ " " + rs.getInt(5));
+
+			}
+
+			Scanner sc = new Scanner(System.in);
+			/*
+			 * System.out.println("Enter Account Number: "); int Ac= sc.nextInt();
+			 * 
+			 * System.out.println("Enter password: "); String pwd=sc.next();
+			 */
+			while (true) {
+				System.out.println("0.inset\n 1.Withdraw \n 2. Diposit \n 3.view balance\n 4.exit");
+
+				int display = sc.nextInt();
+				switch (display) {
+				case 0:
+					System.out.println("insert method");
+					String Query = "insert into CusDls values(?,?,?,?,?)";
+					PreparedStatement pst = con.prepareStatement(Query);
+
+					Scanner sc1 = new Scanner(System.in);
+
+					System.out.println("Enter Account Number: ");
+					Ac = sc.nextInt();
+					pst.setInt(1, Ac);
+
+					System.out.println("Enter Name: ");
+					String Fn = sc.next();
+					pst.setString(2, Fn);
+
+					System.out.println("Enter Password: ");
+					String pwd = sc.next();
+					pst.setString(3, pwd);
+
+					System.out.println("Enter email: ");
+					String email = sc.next();
+					pst.setString(4, email);
+
+					System.out.println("Enter balance: ");
+					bal = sc.nextInt();
+
+					pst.setInt(5, bal);
+
+					int i = pst.executeUpdate();
+
+					System.out.println(i);
+
+					break;
+				case 1:
+
+					Scanner sc2 = new Scanner(System.in);
+//					PreparedStatement st1=con.prepareStatement("select BALANCE from CusDls where ANO=?");
+
+					System.out.println("Enter account number to update: ");
+					int k = sc2.nextInt();
+					String my = "select BALANCE from CusDls where ANO=?";
+					PreparedStatement ptr = con.prepareStatement(my);
+
+					ptr.setInt(1, k);
+//					System.out.println(bal);
+					ResultSet rs1 = ptr.executeQuery();
+					while (rs1.next()) {
+						bal = rs1.getInt("BALANCE");
+					}
+					System.out.println(bal);
+
+					System.out.println(" Withdraw method");
+					Scanner scw = new Scanner(System.in);
+					System.out.println("Enter withdraw amount");
+					int withdraw_amount = scw.nextInt();
+					System.out.println(bal);
+					try {
+						//System.out.println(":::::::::::::::::::::::::;");
+						if (withdraw_amount <= bal) {
+							bal = bal - withdraw_amount;
+							System.out.println("Remaining balance" + bal);
+							System.out.println("Enter account number to update: ");
+							int acc = scw.nextInt();
+							String Query1 = "update CusDls set BALANCE=? where ANO=?";
+							PreparedStatement pst1 = con.prepareStatement(Query1);
+
+							pst1.setInt(1, bal);
+							pst1.setInt(2, acc);
+
+							int up = pst1.executeUpdate();
+							System.out.println(up);
+
+						} else {
+							throw new exceptionDemo("sorry! Insufficient balance");
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+
+					}
+
+					break;
+				case 2:
+					System.out.println("Diposit");
+					Scanner sc3 = new Scanner(System.in);
+					System.out.println("enter account number to deposit: ");
+					int b = sc3.nextInt();
+					String my1 = "select BALANCE from CusDls where ANO=?";
+					PreparedStatement pst2 = con.prepareStatement(my1);
+					pst2.setInt(1, b);
+
+					ResultSet rs3 = pst2.executeQuery();
+
+					while (rs3.next()) {
+
+						bal = rs3.getInt("BALANCE");
+
+					}
+					System.out.println(bal);
+
+					Scanner scw1 = new Scanner(System.in);
+					System.out.println("Enter deposit amount");
+					int deposit_amount = scw1.nextInt();
+					try {
+						if (deposit_amount > 500) {
+							bal = bal + deposit_amount;
+							System.out.println("Remaining balance: " + bal);
+
+							System.out.println("Enter account number to update: ");
+							int acc1 = scw1.nextInt();
+
+							String Query2 = "update CusDls set BALANCE=? where ANO=?";
+							PreparedStatement pst3 = con.prepareStatement(Query2);
+
+							pst3.setInt(1, bal);
+							pst3.setInt(2, acc1);
+
+							int dp = pst3.executeUpdate();
+							System.out.println(dp);
+
+						} else {
+							throw new exceptionDemo(" please enter above 500");
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+
+					System.out.println("Diposit");
+					break;
+				case 3:
+					System.out.println("view balance:");
+
+					Scanner sc4 = new Scanner(System.in);
+					System.out.println("Enter Account No to view balance: ");
+					int c = sc4.nextInt();
+					String Query4 = "select BALANCE from CusDls where ANO=?";
+					PreparedStatement pst4 = con.prepareStatement(Query4);
+					pst4.setInt(1, c);
+					ResultSet rs4 = pst4.executeQuery();
+					while (rs4.next()) {
+						bal = rs4.getInt("BALANCE");
+
+					}
+					System.out.println(bal);
+					break;
+				case 4:
+					System.exit(0);
+					break;
+				default:
+					System.out.println("done");
+
+				}
+				con.close();
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+}
