@@ -1,0 +1,317 @@
+package jdbcProject;
+
+import java.util.*;
+import java.sql.*;
+import java.lang.*;
+
+public class Sample {
+
+	
+	public static void main(String[] args) throws ClassNotFoundException, SQLException {
+		
+		Scanner sc = new Scanner(System.in);
+		
+		try
+		{
+			String F_Name,L_Name,Password,Phone;
+			int Ac_No=1140,Withdraws=0,Deposit=0,Balance=10000,update_field;
+			
+		Class.forName("com.ibm.db2.jcc.DB2Driver");
+		Connection conn = DriverManager.getConnection("jdbc:db2://172.17.0.142:50001/itgdb","ITGUSR11","miracle11");
+		System.out.println("Connected to DB");
+		Statement stm = conn.createStatement();
+		//stm.execute("Create table Customers_Details(Ac_No int,F_Name varchar(10),L_Name varchar(10),Password varchar(10),Phone varchar(10),Withdraws int,Deposit int,Balance int)");
+		System.out.println("Table created");
+		ResultSet rs;
+		PreparedStatement ps;
+		ResultSetMetaData rsmd;
+		
+		rs = stm.executeQuery("Select * from Customers_Details");
+		
+		rsmd = rs.getMetaData();
+		
+		while(true)
+		{
+		System.out.println("1. List Customers\n2. New Customer\n3. Update Customer\n4. Delete Customer\n5. Show Balance\n6. Withdraws\n7. Exit");
+		System.out.print("Enter Your Option : ");
+		int option=sc.nextInt();
+		switch(option)
+		{
+		case 1:
+				rs = stm.executeQuery("Select * from Customers_Details");
+				System.out.println("Acc No	First Name	Last Name	Phone No    Withdr  Deposit   Balance");
+				while(rs.next())
+				{
+					System.out.println(rs.getInt(1)+"	"+rs.getString(2)+"		"+rs.getString(3)+"		"+rs.getString(5)+"	"+rs.getInt(6)+"	"+rs.getInt(7)+"	"+rs.getInt(8));
+					Ac_No=rs.getInt(1);
+				}
+				System.out.println("\n");
+		break;
+		
+		case 2:
+				Ac_No++;
+				System.out.print("Enter Your First Name : ");
+				F_Name = sc.next();
+				System.out.print("Enter Your Last Name : ");
+				L_Name = sc.next();
+				System.out.print("Enter Your Password : ");
+				Password = sc.next();
+				System.out.print("Enter Your Phone No : ");
+				Phone = sc.next();
+				ps = conn.prepareStatement("insert into Customers_Details values(?,?,?,?,?,?,?,?)");
+				ps.setInt(1, Ac_No);
+				ps.setString(2, F_Name);
+				ps.setString(3, L_Name);
+				ps.setString(4, Password);
+				ps.setString(5,Phone);
+				ps.setInt(6, Withdraws);
+				ps.setInt(7,Deposit);
+				ps.setInt(8, Balance);
+			
+				ps.executeUpdate();
+				
+				System.out.println("You Registered Successfullyyy...\n\n");
+				
+				
+		break;
+		
+		case 3:	System.out.println("1. First Name\n2. Last Name\n3. Password\n4. Phone Number");
+				System.out.print("Enter Which Field You want to Update : ");
+				update_field = sc.nextInt();
+				String acno;
+				
+				if(update_field >= 1 && update_field <=4)
+				{
+					System.out.print("Please Enter Your Account No : ");
+					acno = sc.next();
+					System.out.println("Enter Your "+rsmd.getColumnName(update_field+1)+" : ");
+					String newf_name=sc.next();
+					
+					
+					ps = conn.prepareStatement("Update Customers_Details set "+rsmd.getColumnName(update_field+1)+"=? where Ac_No=? ");
+					ps.setString(1, newf_name);
+					ps.setString(2, acno);
+					ps.executeUpdate();
+					
+					System.out.println("Your Update is Successful...!");
+				}
+				else
+				{
+					System.out.println("Invalid Option");
+				}
+				
+				
+		break;
+		
+		case 4: System.out.print("Enter Accont No and Password to Delete Account : ");
+				String dac=sc.next();
+				String dpass=sc.next();
+				
+				ps = conn.prepareStatement("Delete Customers_Details where Ac_No=? and Password=?");
+				ps.setString(1, dac);
+				ps.setString(2, dpass);
+				ps.executeUpdate();
+				
+				System.out.println(dac+" Account Deleted Successfully");
+				
+		break;
+				
+		
+		case 5: System.out.print("Enter Your Account No : ");
+				acno=sc.next();
+				System.out.print("Enter Your Password : ");
+				String pass=sc.next();
+				
+				ps = conn.prepareStatement("Select Balance from Customers_Details where Ac_No=? and Password=?");
+				ps.setString(1, acno);
+				ps.setString(2, pass);
+				rs = ps.executeQuery();
+				
+				while(rs.next())
+					System.out.println("Your Account Balance is : "+rs.getString(1));
+				
+		break;
+		
+		case 6: System.out.print("Please Enter Your Account No : ");
+				acno = sc.next();
+				
+				System.out.print("Enter Withdraw Amount : ");
+				int with = sc.nextInt();
+				package jdbcProject;
+
+import java.util.*;
+
+public class Sample {
+
+	
+	public static void main(String[] args) throws ClassNotFoundException, SQLException {
+		
+		Scanner sc = new Scanner(System.in);
+		
+		try
+		{
+			String F_Name,L_Name,Password,Phone;
+			int Ac_No=1140,Withdraws=0,Deposit=0,Balance=10000,update_field;
+			
+		Class.forName("com.ibm.db2.jcc.DB2Driver");
+		Connection conn = DriverManager.getConnection("jdbc:db2://172.17.0.142:50001/itgdb","ITGUSR11","miracle11");
+		System.out.println("Connected to DB");
+		Statement stm = conn.createStatement();
+		//stm.execute("Create table Customers_Details(Ac_No int,F_Name varchar(10),L_Name varchar(10),Password varchar(10),Phone varchar(10),Withdraws int,Deposit int,Balance int)");
+		System.out.println("Table created");
+		ResultSet rs;
+		PreparedStatement ps;
+		ResultSetMetaData rsmd;
+		
+		rs = stm.executeQuery("Select * from Customers_Details");
+		
+		rsmd = rs.getMetaData();
+		
+		while(true)
+		{
+		System.out.println("1. List Customers\n2. New Customer\n3. Update Customer\n4. Delete Customer\n5. Show Balance\n6. Withdraws\n7. Exit");
+		System.out.print("Enter Your Option : ");
+		int option=sc.nextInt();
+		switch(option)
+		{
+		case 1:
+				rs = stm.executeQuery("Select * from Customers_Details");
+				System.out.println("Acc No	First Name	Last Name	Phone No    Withdr  Deposit   Balance");
+				while(rs.next())
+				{
+					System.out.println(rs.getInt(1)+"	"+rs.getString(2)+"		"+rs.getString(3)+"		"+rs.getString(5)+"	"+rs.getInt(6)+"	"+rs.getInt(7)+"	"+rs.getInt(8));
+					Ac_No=rs.getInt(1);
+				}
+				System.out.println("\n");
+		break;
+		
+		case 2:
+				Ac_No++;
+				System.out.print("Enter Your First Name : ");
+				F_Name = sc.next();
+				System.out.print("Enter Your Last Name : ");
+				L_Name = sc.next();
+				System.out.print("Enter Your Password : ");
+				Password = sc.next();
+				System.out.print("Enter Your Phone No : ");
+				Phone = sc.next();
+				ps = conn.prepareStatement("insert into Customers_Details values(?,?,?,?,?,?,?,?)");
+				ps.setInt(1, Ac_No);
+				ps.setString(2, F_Name);
+				ps.setString(3, L_Name);
+				ps.setString(4, Password);
+				ps.setString(5,Phone);
+				ps.setInt(6, Withdraws);
+				ps.setInt(7,Deposit);
+				ps.setInt(8, Balance);
+			
+				ps.executeUpdate();
+				
+				System.out.println("You Registered Successfullyyy...\n\n");
+				
+				
+		break;
+		
+		case 3:	System.out.println("1. First Name\n2. Last Name\n3. Password\n4. Phone Number");
+				System.out.print("Enter Which Field You want to Update : ");
+				update_field = sc.nextInt();
+				String acno;
+				
+				if(update_field >= 1 && update_field <=4)
+				{
+					System.out.print("Please Enter Your Account No : ");
+					acno = sc.next();
+					System.out.println("Enter Your "+rsmd.getColumnName(update_field+1)+" : ");
+					String newf_name=sc.next();
+					
+					
+					ps = conn.prepareStatement("Update Customers_Details set "+rsmd.getColumnName(update_field+1)+"=? where Ac_No=? ");
+					ps.setString(1, newf_name);
+					ps.setString(2, acno);
+					ps.executeUpdate();
+					
+					System.out.println("Your Update is Successful...!");
+				}
+				else
+				{
+					System.out.println("Invalid Option");
+				}
+				
+				
+		break;
+		
+		case 4: System.out.print("Enter Accont No and Password to Delete Account : ");
+				String dac=sc.next();
+				String dpass=sc.next();
+				
+				ps = conn.prepareStatement("Delete Customers_Details where Ac_No=? and Password=?");
+				ps.setString(1, dac);
+				ps.setString(2, dpass);
+				ps.executeUpdate();
+				
+				System.out.println(dac+" Account Deleted Successfully");
+				
+		break;
+				
+		
+		case 5: System.out.print("Enter Your Account No : ");
+				acno=sc.next();
+				System.out.print("Enter Your Password : ");
+				String pass=sc.next();
+				
+				ps = conn.prepareStatement("Select Balance from Customers_Details where Ac_No=? and Password=?");
+				ps.setString(1, acno);
+				ps.setString(2, pass);
+				rs = ps.executeQuery();
+				
+				while(rs.next())
+					System.out.println("Your Account Balance is : "+rs.getString(1));
+				
+		break;
+		
+		case 6: System.out.print("Please Enter Your Account No : ");
+				acno = sc.next();
+				
+				System.out.print("Enter Withdraw Amount : ");
+				int with = sc.nextInt();
+				
+				rs = stm.executeQuery("Select Balance from Customers_Details where Ac_No="+acno);
+				int bal;
+			
+		break;
+		
+		case 7: conn.close();
+				System.exit(0);
+		break;
+		
+		default : System.out.println("Invalid Option...!");
+		}
+		}
+		}
+		catch(Exception e)
+		{
+			System.out.println(e);
+		}
+	}
+
+}
+				rs = stm.executeQuery("Select Balance from Customers_Details where Ac_No="+acno);
+				int bal;
+			
+		break;
+		
+		case 7: conn.close();
+				System.exit(0);
+		break;
+		
+		default : System.out.println("Invalid Option...!");
+		}
+		}
+		}
+		catch(Exception e)
+		{
+			System.out.println(e);
+		}
+	}
+
+}
